@@ -11,10 +11,10 @@
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
+    <ImageButton
         android:id="@+id/widgetButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:src="@drawable/power_black" />
 
 </LinearLayout>

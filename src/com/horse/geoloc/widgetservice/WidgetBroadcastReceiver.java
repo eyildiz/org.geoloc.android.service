@@ -27,6 +27,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 				Toast.makeText(context, "Açıldı", Toast.LENGTH_SHORT).show();
 				setFlag(true);
 				v.setTextViewText(R.id.widgetTextView,"GPS ON");
+				v.setImageViewResource(R.id.widgetButton,R.drawable.power_blue);
 				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
 			}
 			
@@ -35,6 +36,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 				Toast.makeText(context, "Kapandı", Toast.LENGTH_SHORT).show();
 				setFlag(false);
 				v.setTextViewText(R.id.widgetTextView,"GPS OFF");
+				v.setImageViewResource(R.id.widgetButton,R.drawable.power_black);
 				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
 			}
 	    }
