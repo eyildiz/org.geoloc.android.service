@@ -20,6 +20,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 			{
 				Toast.makeText(context, "Açıldı", Toast.LENGTH_SHORT).show();
 				setFlag(true);
+				//hop
 			}
 			else if(flag == true)
 			{
