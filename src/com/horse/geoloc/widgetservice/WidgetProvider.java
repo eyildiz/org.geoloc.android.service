@@ -20,7 +20,7 @@ public class WidgetProvider extends AppWidgetProvider{
 		
 		for(int i = 0 ; i < N ; i++)
 		{
-			//dfadag
+			
 			int widgetId = appWidgetIds[i];
 			Intent intent = new Intent();
 		    intent.setAction(WidgetBroadcastReceiver.INTENT_ACTION);

@@ -1,8 +1,10 @@
 package com.horse.geoloc.widgetservice;
 
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class WidgetBroadcastReceiver extends BroadcastReceiver{
@@ -14,18 +16,26 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 				
+		RemoteViews v = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
+	//	RemoteViews v2 = new RemoteViews(context.getPackageName(),R.id.wi)
+		AppWidgetManager appmanager = AppWidgetManager.getInstance(context);
+		
 		if(intent.getAction().toString().equals(INTENT_ACTION))
 		{
 			if(flag == false)
 			{
 				Toast.makeText(context, "Açıldı", Toast.LENGTH_SHORT).show();
 				setFlag(true);
-				//hop
+				v.setTextViewText(R.id.widgetTextView,"GPS ON");
+				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
 			}
+			
 			else if(flag == true)
 			{
 				Toast.makeText(context, "Kapandı", Toast.LENGTH_SHORT).show();
 				setFlag(false);
+				v.setTextViewText(R.id.widgetTextView,"GPS OFF");
+				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
 			}
 	    }
 		
