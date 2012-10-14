@@ -29,6 +29,10 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 				v.setTextViewText(R.id.widgetTextView,"GPS ON");
 				v.setImageViewResource(R.id.widgetButton,R.drawable.power_blue);
 				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
+				
+				Intent in = new Intent(context, WidgetService.class);
+				context.startService(in);
+				
 			}
 			
 			else if(flag == true)
@@ -38,6 +42,9 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 				v.setTextViewText(R.id.widgetTextView,"GPS OFF");
 				v.setImageViewResource(R.id.widgetButton,R.drawable.power_black);
 				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
+				
+				Intent in = new Intent(context, WidgetService.class);
+				context.stopService(in);
 			}
 	    }
 		
