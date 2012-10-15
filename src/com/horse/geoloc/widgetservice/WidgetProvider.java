@@ -36,8 +36,6 @@ public class WidgetProvider extends AppWidgetProvider{
 			
 		}
 		
-		
-		
 	}
 	
 	@Override

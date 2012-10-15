@@ -4,49 +4,57 @@ import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 public class WidgetBroadcastReceiver extends BroadcastReceiver{
 
+	RemoteViews remoteView ;
+	AppWidgetManager appWidgetManager;
+	LocationManager locationManager;
 	
 	public static final String INTENT_ACTION= "TOGGLE_ACTION";
 	private static boolean flag = false;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-				
-		RemoteViews v = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
-	//	RemoteViews v2 = new RemoteViews(context.getPackageName(),R.id.wi)
-		AppWidgetManager appmanager = AppWidgetManager.getInstance(context);
 		
-		if(intent.getAction().toString().equals(INTENT_ACTION))
+		remoteView = new RemoteViews(context.getPackageName(),R.layout.widget_layout);
+		appWidgetManager = AppWidgetManager.getInstance(context);
+		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		
+		if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) )
 		{
-			if(flag == false)
+			Toast.makeText(context,"Konum sağlayıcılarınız devre dışı, lütfen kontrol ediniz" ,Toast.LENGTH_SHORT);
+			setWidgetİmage(intent, R.drawable.power_black);
+		}
+		else
+		{
+			if(intent.getAction().toString().equals(INTENT_ACTION))
 			{
-				Toast.makeText(context, "Açıldı", Toast.LENGTH_SHORT).show();
-				setFlag(true);
-				v.setTextViewText(R.id.widgetTextView,"GPS ON");
-				v.setImageViewResource(R.id.widgetButton,R.drawable.power_blue);
-				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
+				if(flag == false)
+				{
+					Toast.makeText(context, "Açıldı", Toast.LENGTH_SHORT).show();
+					setFlag(true);
+					remoteView.setTextViewText(R.id.widgetTextView,"GPS ON");
+					setWidgetİmage(intent, R.drawable.power_blue);
+					Intent in = new Intent(context, WidgetService.class);
+					context.startService(in);
+					
+				}
 				
-				Intent in = new Intent(context, WidgetService.class);
-				context.startService(in);
-				
-			}
-			
-			else if(flag == true)
-			{
-				Toast.makeText(context, "Kapandı", Toast.LENGTH_SHORT).show();
-				setFlag(false);
-				v.setTextViewText(R.id.widgetTextView,"GPS OFF");
-				v.setImageViewResource(R.id.widgetButton,R.drawable.power_black);
-				appmanager.updateAppWidget(intent.getExtras().getInt("widgetID"),v);
-				
-				Intent in = new Intent(context, WidgetService.class);
-				context.stopService(in);
-			}
-	    }
+				else if(flag == true)
+				{
+					Toast.makeText(context, "Kapandı", Toast.LENGTH_SHORT).show();
+					setFlag(false);
+					remoteView.setTextViewText(R.id.widgetTextView,"GPS OFF");
+					setWidgetİmage(intent,R.drawable.power_black);
+					Intent in = new Intent(context, WidgetService.class);
+					context.stopService(in);
+				}
+		    }
+		}
 		
 	}
 
@@ -56,6 +64,12 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver{
 	
 	public static void setFlag(boolean flag) {
 		WidgetBroadcastReceiver.flag = flag;
+	}
+
+	private void setWidgetİmage(Intent intent , int id)
+	{
+		remoteView.setImageViewResource(R.id.widgetButton,id);
+		appWidgetManager.updateAppWidget(intent.getExtras().getInt("widgetID"),remoteView);
 	}
 
 

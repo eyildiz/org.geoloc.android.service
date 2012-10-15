@@ -1,9 +1,8 @@
 package com.horse.geoloc.widgetservice;
 
-import java.security.Provider;
+
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
@@ -37,18 +36,14 @@ public class WidgetService extends Service{
 			locationListener = new GPSListener();
 			isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-			
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-			
+				
+		}catch (Exception e) {
 			toastMessage("Hata in onCreate: " + e.toString());
 		}
 		
 		if(isGPSEnabled || isNetworkEnabled){
 		Criteria criteria = new Criteria();
 		provider = locationManager.getBestProvider(criteria, false);
-		location =locationManager.getLastKnownLocation(provider);
 		
 		toastMessage("Using " + provider);
 		toastMessage("network " + String.valueOf(isNetworkEnabled) + " gps: " + String.valueOf(isGPSEnabled));
@@ -63,7 +58,6 @@ public class WidgetService extends Service{
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		
 		locationManager.removeUpdates(locationListener);
 	}
 
@@ -74,11 +68,8 @@ public class WidgetService extends Service{
 		
 		
 		try {
-			
-		 locationManager.requestLocationUpdates(provider, 0, 1, locationListener);
-			
+		locationManager.requestLocationUpdates(provider,0 , 5 , locationListener);
 		} catch (Exception e) {
-			// TODO: handle exception
 			toastMessage("Error in onStartCommand " + e.toString());
 		}
 					
@@ -92,8 +83,6 @@ public class WidgetService extends Service{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
 	
 	
 	private class GPSListener implements LocationListener {
@@ -110,9 +99,7 @@ public class WidgetService extends Service{
 				toastMessage("latitude: " + String.valueOf(latitude));
 				toastMessage("longitude: " + String.valueOf(longitude));
 				
-			} catch (Exception e) {
-				// TODO: handle exception
-				
+			} catch (Exception e){
 				toastMessage("Error in onLocationChanged" + e.toString());
 			}
 
@@ -122,7 +109,7 @@ public class WidgetService extends Service{
 		@Override
 		public void onProviderDisabled(String provider) {
 			// TODO Auto-generated method stub
-			
+			toastMessage("Konum Sağlayıcı devre dışı");
 		}
 
 		@Override
@@ -136,16 +123,13 @@ public class WidgetService extends Service{
 			// TODO Auto-generated method stub
 			
 		}
-			
-		
+					
 	}
 	
 	
-
 	private void toastMessage(String msg){
 		
 		Toast.makeText(this, msg , Toast.LENGTH_SHORT).show();
-		
 	}
 
 }
