@@ -4,13 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/widgetTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <ImageButton
         android:id="@+id/widgetButton"
         android:layout_width="match_parent"

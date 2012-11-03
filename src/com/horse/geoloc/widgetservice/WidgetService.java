@@ -2,6 +2,22 @@ package com.horse.geoloc.widgetservice;
 
 
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Service;
 import android.content.Intent;
 import android.location.Criteria;
@@ -15,6 +31,10 @@ import android.widget.Toast;
 public class WidgetService extends Service{
 
 
+	private static String URL = "http://107.20.156.81:8080/GeoLocWebServices-0.1/ws/";
+	private static int TIMEOUT = 10000;
+	
+	
 	private boolean isGPSEnabled = false;
 	private boolean isNetworkEnabled = false;
 	
@@ -68,7 +88,7 @@ public class WidgetService extends Service{
 		
 		
 		try {
-		locationManager.requestLocationUpdates(provider,0 , 5 , locationListener);
+		locationManager.requestLocationUpdates(provider, 5 , 0 , locationListener);
 		} catch (Exception e) {
 			toastMessage("Error in onStartCommand " + e.toString());
 		}
@@ -99,6 +119,8 @@ public class WidgetService extends Service{
 				toastMessage("latitude: " + String.valueOf(latitude));
 				toastMessage("longitude: " + String.valueOf(longitude));
 				
+				sendData(WidgetBroadcastReceiver.IMEI, latitude, longitude);
+				
 			} catch (Exception e){
 				toastMessage("Error in onLocationChanged" + e.toString());
 			}
@@ -124,6 +146,51 @@ public class WidgetService extends Service{
 			
 		}
 					
+	}
+	
+	
+	private void sendData(String IMEI, double latitude, double longitude)
+	{
+		JSONObject sendDataObj = new JSONObject();
+		try {
+			sendDataObj.put("IMEI", IMEI);
+			sendDataObj.put("latitude", latitude);
+			sendDataObj.put("longitude", longitude);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String JsonString = sendDataObj.toString();
+		
+		String methodName = "updateUserLocation";
+		
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters, TIMEOUT);
+		HttpConnectionParams.setSoTimeout(httpParameters, TIMEOUT);
+		
+		HttpClient client = new DefaultHttpClient(httpParameters);
+		
+		HttpPost request = new HttpPost(URL+methodName);
+		
+		
+		try{
+			request.setEntity(new ByteArrayEntity(JsonString.getBytes("UTF8")));
+		}
+		catch(UnsupportedEncodingException e){
+			e.printStackTrace();
+		}
+		
+		try {
+			client.execute(request);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	
